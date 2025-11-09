@@ -1,0 +1,33 @@
+[package]
+name = "vcs"
+version = "0.2.0"
+edition = "2021"
+description = "A production-ready version control system similar to Git, built in Rust"
+authors = ["Your Name <your.email@example.com>"]  # Update with your information before publishing
+license = "MIT"
+repository = "https://github.com/YOUR_USERNAME/vcs"  # Update with your repository URL
+readme = "README.md"
+keywords = ["vcs", "version-control", "git", "scm", "source-control"]
+categories = ["development-tools", "command-line-utilities"]
+# Files to exclude from package (optional - cargo auto-excludes based on .gitignore)
+# exclude = [
+#     "target/",
+#     "test_*",
+# ]
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+sha1 = "0.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = "0.4"
+hex = "0.4"
+anyhow = "1.0"
+walkdir = "2.4"
+whoami = "1.4"
+colored = "2.1"
+glob = "0.3"
+regex = "1.10"
+dirs = "5.0"
+fs2 = "0.4"
+tempfile = "3.10"

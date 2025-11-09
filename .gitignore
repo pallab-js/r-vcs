@@ -1,0 +1,35 @@
+# Rust build artifacts
+/target
+Cargo.lock
+
+# VCS repository data (don't track our own .vcs directories)
+.vcs
+**/.vcs
+
+# Test directories
+test_*
+test_repo*
+test_project
+test_bug*
+test_enhanced
+test_rigorous
+test_final
+test_prod
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+*~
