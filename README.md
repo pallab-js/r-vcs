@@ -6,8 +6,7 @@ A production-ready version control system similar to Git, built in Rust.
 
 ## Quick Links
 
-- 📖 **[Quick Start Guide](QUICK_START.md)** - Get started in 5 minutes
-- 📚 **[Installation Guide](INSTALLATION.md)** - Detailed installation instructions
+- 📖 **Installation** - See below for installation instructions
 - 🚀 **[Features](#features)** - What VCS can do
 - 📝 **[Usage](#usage)** - How to use VCS
 
@@ -86,8 +85,7 @@ copy target\release\vcs.exe "C:\Program Files\VCS\vcs.exe"
 vcs --help
 ```
 
-📖 **For detailed installation instructions**, see [INSTALLATION.md](INSTALLATION.md)  
-⚡ **For a 5-minute quick start**, see [QUICK_START.md](QUICK_START.md)
+📖 **Installation instructions are provided below**
 
 ---
 
@@ -282,18 +280,6 @@ This is a simplified VCS implementation. It does not include:
 - Advanced diff operations
 - Tagging system
 
-See `ENHANCEMENTS.md` for a complete list of potential future features.
-
----
-
-## Documentation
-
-- **[QUICK_START.md](QUICK_START.md)** - Get started in 5 minutes
-- **[INSTALLATION.md](INSTALLATION.md)** - Detailed installation guide
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history
-- **[ENHANCEMENTS.md](ENHANCEMENTS.md)** - Roadmap and future features
-
 ---
 
 ## License
@@ -304,14 +290,12 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please feel free to:
 
-We welcome:
-- Bug reports
-- Feature requests
-- Pull requests
-- Documentation improvements
-- Testing
+- Report bugs and issues
+- Suggest new features
+- Submit pull requests
+- Improve documentation
 
 ---
 
