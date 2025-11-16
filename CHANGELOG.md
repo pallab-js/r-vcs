@@ -49,5 +49,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Commit history tracking
 - Cat-file command for object inspection
 
-[0.2.0]: https://github.com/YOUR_USERNAME/vcs/releases/tag/v0.2.0
-[0.1.0]: https://github.com/YOUR_USERNAME/vcs/releases/tag/v0.1.0
+[0.2.0]: https://github.com/pallab-js/vcs/releases/tag/v0.2.0
+[0.1.0]: https://github.com/pallab-js/vcs/releases/tag/v0.1.0

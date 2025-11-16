@@ -17,6 +17,7 @@ impl RepoLock {
             .read(true)
             .write(true)
             .create(true)
+            .truncate(true)
             .open(&lock_path)
             .with_context(|| format!("Failed to open lock file: {}", lock_path.display()))?;
 

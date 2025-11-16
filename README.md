@@ -56,7 +56,7 @@ vcs --help
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/vcs.git
+git clone https://github.com/pallab-js/vcs.git
 cd vcs
 
 # Build
@@ -87,8 +87,7 @@ vcs --help
 ```
 
 📖 **For detailed installation instructions**, see [INSTALLATION.md](INSTALLATION.md)  
-⚡ **For a 5-minute quick start**, see [QUICK_START.md](QUICK_START.md)  
-📦 **To publish to crates.io**, see [PUBLISHING.md](PUBLISHING.md)
+⚡ **For a 5-minute quick start**, see [QUICK_START.md](QUICK_START.md)
 
 ---
 

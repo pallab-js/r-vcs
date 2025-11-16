@@ -27,7 +27,7 @@ rustc --version
 
 **Option A: Clone (if you have git)**
 ```bash
-git clone https://github.com/YOUR_USERNAME/vcs.git
+git clone https://github.com/pallab-js/vcs.git
 cd vcs
 ```
 

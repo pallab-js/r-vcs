@@ -36,7 +36,7 @@ This is the most flexible method and works on all platforms.
 
 **Option A: Clone from Git Repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/vcs.git
+git clone https://github.com/pallab-js/vcs.git
 cd vcs
 ```
 
@@ -118,7 +118,7 @@ If pre-built binaries are provided:
 **Linux:**
 ```bash
 # Download the binary
-wget https://github.com/YOUR_USERNAME/vcs/releases/latest/download/vcs-linux-x86_64
+wget https://github.com/pallab-js/vcs/releases/latest/download/vcs-linux-x86_64
 
 # Make it executable
 chmod +x vcs-linux-x86_64
@@ -130,7 +130,7 @@ sudo mv vcs-linux-x86_64 /usr/local/bin/vcs
 **macOS:**
 ```bash
 # Download the binary
-curl -LO https://github.com/yourusername/vcs/releases/latest/download/vcs-macos-x86_64
+curl -LO https://github.com/pallab-js/vcs/releases/latest/download/vcs-macos-x86_64
 
 # Make it executable
 chmod +x vcs-macos-x86_64

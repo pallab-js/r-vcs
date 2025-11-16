@@ -57,7 +57,8 @@ fn add_file(repo: &Repository, index: &mut Vec<IndexEntry>, path: &Path) -> Resu
 
     // Normalize line endings: CRLF -> LF for consistency across platforms
     // This prevents false "modified" files when collaborating across Windows/Unix
-    if data.contains(&b'\r') {
+    // Only normalize if the file appears to be text (no null bytes)
+    if data.contains(&b'\r') && !data.contains(&b'\0') {
         let mut normalized = Vec::with_capacity(data.len());
         let mut i = 0;
         while i < data.len() {
@@ -208,7 +209,7 @@ fn create_tree_for_path(
                 let subdir_name = name.to_string_lossy().to_string();
                 subdirs
                     .entry(subdir_name)
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push(entry);
             }
         }
@@ -235,6 +236,40 @@ fn create_tree_for_path(
             hash: entry.hash.clone(),
         });
     }
+
+    // Create subtrees for subdirectories
+    let mut subdir_names: Vec<String> = subdirs.keys().cloned().collect();
+    subdir_names.sort();
+
+    for subdir_name in subdir_names {
+        let subdir_path = if base_path.is_empty() {
+            subdir_name.clone()
+        } else {
+            format!("{}/{}", base_path, subdir_name)
+        };
+
+        let sub_tree_entries = create_tree_for_path(repo, all_entries, &subdir_path)?;
+        let sub_tree = GitObject::Tree(sub_tree_entries);
+        let sub_tree_hash = repo.write_object(&sub_tree)?;
+
+        tree_entries.push(TreeEntry {
+            mode: "40000".to_string(), // Directory
+            name: subdir_name,
+            hash: sub_tree_hash,
+        });
+    }
+
+    // Sort tree entries for consistent hashing (files before directories, then alphabetically)
+    tree_entries.sort_by(|a, b| {
+        // Directories come after files
+        let a_is_dir = a.mode == "40000";
+        let b_is_dir = b.mode == "40000";
+        if a_is_dir != b_is_dir {
+            return a_is_dir.cmp(&b_is_dir);
+        }
+        // Alphabetical sort within same type
+        a.name.cmp(&b.name)
+    });
 
     // Create subtrees for subdirectories
     let mut subdir_names: Vec<String> = subdirs.keys().cloned().collect();
@@ -310,11 +345,11 @@ pub fn status() -> Result<()> {
 
         if in_index {
             // File is in index (staged)
-            let idx_hash = index_paths[path].clone();
+            let idx_hash = index_paths.get(path).unwrap().clone();
             if working_hash == idx_hash {
                 // Working directory matches index
                 if in_head {
-                    let hd_hash = head_files[path].clone();
+                    let hd_hash = head_files.get(path).unwrap().clone();
                     if idx_hash == hd_hash {
                         // Matches both index and HEAD - shouldn't be staged, but if it is, ignore
                         // This shouldn't happen in normal operation
@@ -330,7 +365,7 @@ pub fn status() -> Result<()> {
                 // Working directory differs from index
                 // File is staged (index version) but also modified in working directory
                 if in_head {
-                    let hd_hash = head_files[path].clone();
+                    let hd_hash = head_files.get(path).unwrap().clone();
                     if idx_hash == hd_hash {
                         // Index matches HEAD, working differs - just modified, not staged
                         modified.push(path.clone());
@@ -347,7 +382,7 @@ pub fn status() -> Result<()> {
             }
         } else if in_head {
             // File is tracked (in HEAD) but not in index
-            let hd_hash = head_files[path].clone();
+            let hd_hash = head_files.get(path).unwrap().clone();
             if working_hash != hd_hash {
                 // Modified from HEAD
                 modified.push(path.clone());
@@ -373,7 +408,7 @@ pub fn status() -> Result<()> {
     }
 
     // Check for files in HEAD but deleted from working directory (not staged)
-    for (path, _) in &head_files {
+    for path in head_files.keys() {
         if !working_files.contains_key(path) && !index_paths.contains_key(path) {
             deleted.push(path.clone());
         }
@@ -565,14 +600,13 @@ pub fn cat_file(hash: &str) -> Result<()> {
 }
 
 pub fn config(key: Option<String>, value: Option<String>, global: bool, list: bool) -> Result<()> {
-    // For global config, we don't need a repo
-    let repo = if global {
-        // Create a dummy repo path for global config
-        Repository::new(std::env::current_dir()?)?
+    let config = if global {
+        // For global config, create config without a repo
+        Config::global_only()
     } else {
-        Repository::get_repo()?
+        let repo = Repository::get_repo()?;
+        Config::new(&repo)
     };
-    let config = Config::new(&repo);
 
     if list {
         let all_config = config.list()?;
@@ -618,20 +652,22 @@ pub fn reset(paths: Vec<String>) -> Result<()> {
     for path_str in paths {
         let path = PathBuf::from(&path_str);
         let rel_path = if path.is_absolute() {
-            path.strip_prefix(&repo.worktree)
-                .ok()
-                .and_then(|p| p.to_str())
-                .map(|s| s.replace('\\', "/"))
+            // Convert absolute path to relative path from worktree
+            match path.strip_prefix(&repo.worktree) {
+                Ok(rel) => rel.to_string_lossy().replace('\\', "/"),
+                Err(_) => {
+                    // Path is not under worktree, skip it
+                    continue;
+                }
+            }
         } else {
-            Some(path_str.replace('\\', "/"))
+            path_str.replace('\\', "/")
         };
 
-        if let Some(rel) = rel_path {
-            let before_len = index.len();
-            index.retain(|e| e.path != rel);
-            if index.len() < before_len {
-                removed.push(rel);
-            }
+        let before_len = index.len();
+        index.retain(|e| e.path != rel_path);
+        if index.len() < before_len {
+            removed.push(rel_path);
         }
     }
 

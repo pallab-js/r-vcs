@@ -1,11 +1,10 @@
-# Maintainer Documentation
+# GitHub Configuration
 
-This directory contains documentation for project maintainers.
+This directory contains GitHub-specific configuration files.
 
 ## Files
 
-- **PUBLISHING.md** - Guide for publishing to crates.io
-- **workflows/ci.yml** - GitHub Actions CI/CD configuration
+- **workflows/ci.yml** - GitHub Actions CI/CD configuration for automated testing and building
 
 ## For End Users
 

@@ -19,7 +19,14 @@ impl Repository {
 
     pub fn find() -> Result<Option<Self>> {
         let mut path = std::env::current_dir()?;
+        let mut visited = std::collections::HashSet::new();
+
         loop {
+            // Prevent infinite loops in case of symlinks or other filesystem issues
+            if !visited.insert(path.clone()) {
+                return Ok(None);
+            }
+
             let vcs_dir = path.join(".vcs");
             if vcs_dir.exists() && vcs_dir.is_dir() {
                 return Ok(Some(Repository::new(path)?));

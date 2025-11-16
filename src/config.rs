@@ -22,10 +22,24 @@ impl Config {
         }
     }
 
+    pub fn global_only() -> Self {
+        let repo_config_path = PathBuf::new(); // Empty path, won't be used
+        let global_config_path = dirs::home_dir()
+            .map(|home| home.join(".vcsconfig"))
+            .unwrap_or_else(|| PathBuf::from(".vcsconfig"));
+
+        Config {
+            repo_config_path,
+            global_config_path,
+        }
+    }
+
     pub fn get(&self, key: &str) -> Result<Option<String>> {
-        // Check repo config first
-        if let Some(value) = self.read_config_file(&self.repo_config_path, key)? {
-            return Ok(Some(value));
+        // Check repo config first (if it exists)
+        if !self.repo_config_path.as_os_str().is_empty() {
+            if let Some(value) = self.read_config_file(&self.repo_config_path, key)? {
+                return Ok(Some(value));
+            }
         }
 
         // Then check global config
@@ -55,10 +69,12 @@ impl Config {
             all_config.insert(format!("global.{}", k), v);
         }
 
-        // Read repo config (overrides global)
-        let repo = self.read_all_config(&self.repo_config_path)?;
-        for (k, v) in repo {
-            all_config.insert(k, v);
+        // Read repo config (overrides global) if it exists
+        if !self.repo_config_path.as_os_str().is_empty() {
+            let repo = self.read_all_config(&self.repo_config_path)?;
+            for (k, v) in repo {
+                all_config.insert(k, v);
+            }
         }
 
         Ok(all_config)
@@ -113,7 +129,7 @@ impl Config {
         self.get("user.name")
             .ok()
             .flatten()
-            .unwrap_or_else(|| whoami::username())
+            .unwrap_or_else(whoami::username)
     }
 
     pub fn get_user_email(&self) -> String {

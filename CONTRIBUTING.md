@@ -6,7 +6,7 @@ Thank you for your interest in contributing to VCS!
 
 1. **Fork and clone the repository**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/vcs.git
+   git clone https://github.com/pallab-js/vcs.git
    cd vcs
    ```
 
